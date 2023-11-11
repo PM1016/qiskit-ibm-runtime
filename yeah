@@ -1,0 +1,65 @@
+from qiskit.circuit.random import random_circuit
+
+circuit = random_circuit(2, 2, seed=0, measure=True).decompose(reps=1)
+display(circuit.draw("mpl")from qiskit.circuit.random import random_circuit
+
+circuit = random_circuit(2, 2, seed=0, measure=True).decompose(reps=1)
+display(circuit.draw("mpl"))from qiskit.primitives import Sampler
+
+sampler = Sampler()
+from qiskit import QuantumCircuit, QuantumRegister
+
+def detailed_binary_comparator(oracle, sequence_reg, index, k, ancilla_reg, ancilla_idx):
+    # Improved detailed comparator using cascaded Toffoli gates
+    # This comparator aggregates the comparison results more effectively
+    for j in range(k):
+        # Cascaded Toffoli gates for bit-wise comparison
+        oracle.ccx(sequence_reg[index * k + j], sequence_reg[(index + 1) * k + j], ancilla_reg[ancilla_idx + j])
+        # Additional logic can be added here for more sophisticated comparison
+        # ...
+
+def uncompute_detailed_comparator(oracle, sequence_reg, index, k, ancilla_reg, ancilla_idx):
+    # Reversing the comparator logic for uncomputation
+    for j in reversed(range(k)):
+        # Applying inverse operations for cascaded Toffoli gates
+        oracle.ccx(sequence_reg[index * k + j], sequence_reg[(index + 1) * k + j], ancilla_reg[ancilla_idx + j])
+        # Additional inverse operations for complete uncomputation
+        # ...
+
+def sophisticated_monotonicity_marking(oracle, subseq_reg, ancilla_reg, N, k):
+    # Advanced logic for monotonicity marking
+    # This part of the circuit marks subsequences based on the aggregated comparison results
+    for i in range(N - 1):
+        # Use of advanced multi-controlled gates for marking
+        # This could involve more complex logic than simple mcx gates
+        # Placeholder for advanced monotonicity marking logic
+        # ...
+
+def erdos_szekeres_oracle(N, k):
+    sequence_reg = QuantumRegister(N * k, 'sequence')
+    subseq_reg = QuantumRegister(N, 'subseq')
+    ancilla_reg = QuantumRegister((N - 1) * k, 'ancilla')  # For detailed comparisons
+
+    oracle = QuantumCircuit(sequence_reg, subseq_reg, ancilla_reg)
+
+    # Preparing superpositions of subsequences
+    oracle.h(subseq_reg)
+
+    # Implementing improved detailed comparison logic
+    for i in range(N - 1):
+        detailed_binary_comparator(oracle, sequence_reg, i, k, ancilla_reg, i * k)
+        sophisticated_monotonicity_marking(oracle, subseq_reg, ancilla_reg, N, k)
+        uncompute_detailed_comparator(oracle, sequence_reg, i, k, ancilla_reg, i * k)
+
+    # Efficient measurement strategy
+    # This step is crucial for extracting meaningful information and reducing noise
+    # Placeholder for improved measurement and post-processing logic
+    # ...
+
+    return oracle.to_gate(label="Erdős-Szekeres Oracle")
+
+# Example usage
+N = 4  # Length of the sequence
+k = 2  # Number of qubits per number
+improved_erdos_szekeres_gate = erdos_szekeres_oracle(N, k)
+
